@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>普通二叉树的实现和显示</title>
+
+<style>
+  .highlight {
+    font-family: "Arial";
+    padding: 30px;
+  }
+
+  .summer {
+    font-size: 64px;
+    color: #0099FF;
+  }
+
+  .spring {
+    font-size: 24px;
+    color: #1969c5a0;
+  }
+</style>
+
+</head>
+
+<body>
+<h1 id="bigMessage" class="highlight summer">普通二叉树（Binary Tree）的实现与演示</h1>
+<h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+<h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+
+
+<script>
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+const rootNodeA = new Node("A");
+const nodeB = new Node("B");
+const nodeC = new Node("C");
+const nodeD = new Node("D");
+const nodeE = new Node("E");
+const nodeF = new Node("F");
+const nodeG = new Node("G");
+
+rootNodeA.left = nodeB;
+rootNodeA.right = nodeC;
+
+nodeB.left = nodeD;
+nodeB.right = nodeE;
+
+nodeE.left = nodeF;
+nodeE.right = nodeG;
+console.log(rootNodeA,nodeB,nodeC,nodeD,nodeE,nodeF,nodeG);
+  </script>
+  
+</body>
+</html>
