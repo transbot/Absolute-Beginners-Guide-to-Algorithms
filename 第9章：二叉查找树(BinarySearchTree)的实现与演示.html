@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>二叉查找树的实现和显示</title>
+
+<style>
+  .highlight {
+    font-family: "Arial";
+    padding: 30px;
+  }
+
+  .summer {
+    font-size: 64px;
+    color: #0099FF;
+  }
+
+  .spring {
+    font-size: 24px;
+    color: #1969c5a0;
+  }
+</style>
+
+</head>
+
+<body>
+<h1 id="bigMessage" class="highlight summer">二叉查找树（BinarySearchTree）的实现与演示</h1>
+<h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+<h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+
+
+<script>
+
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    // 创建具有给定值的新节点
+    const newNode = new Node(value);
+
+    // 如果树为空，则新节点成为根
+    if (this.root === null) {
+      this.root = newNode;
+      return this;
+    }
+
+    // 遍历树以找到新节点的正确位置
+    let currentNode = this.root;
+
+    while (true) {
+      if (value === currentNode.data) {
+        // 如果值已经存在于树中，则返回undefined
+        return undefined;
+      } else if (value < currentNode.data) {
+        // 如果值小于当前节点的值，则向左移动
+        if (currentNode.left === null) {
+          // 如果左子节点为空，则新节点成为左子节点
+          currentNode.left = newNode;
+          return this;
+        }
+        currentNode = currentNode.left;
+      } else {
+        // 如果值大于当前节点的值，则向右移动
+        if (currentNode.right === null) {
+          // 如果右子节点为空，则新节点成为右子节点
+          currentNode.right = newNode;
+          return this;
+        }
+        currentNode = currentNode.right;
+      }
+    }
+  }
+
+  remove(value) {
+    // 从树的根开始
+    let currentNode = this.root;
+    let parentNode = null;
+
+    // 遍历树以找到要删除的节点
+    while (currentNode !== null) {
+      if (value === currentNode.data) {
+        // 如果找到要删除的节点，那么继续删除过程
+        if (currentNode.left === null && currentNode.right === null) {
+          // 情况1：节点没有子节点
+          if (parentNode === null) {
+            // 如果节点是树的根
+            this.root = null;
+          } else {
+            // 如果节点不是树的根
+            if (parentNode.left === currentNode) {
+              parentNode.left = null;
+            } else {
+              parentNode.right = null;
+            }
+          }
+          return true;
+        } else if (currentNode.left !== null &&
+                   currentNode.right === null) {
+          // 情况2：节点有一个子节点（仅为左子节点）
+          if (parentNode === null) {
+            // 如果节点是树的根
+            this.root = currentNode.left;
+          } else {
+            // 如果节点不是树的根
+            if (parentNode.left === currentNode) {
+              parentNode.left = currentNode.left;
+            } else {
+              parentNode.right = currentNode.left;
+            }
+          }
+          return true;
+        } else if (currentNode.left === null &&
+                   currentNode.right !== null) {
+          // 情况2：节点有一个子节点（仅为右子节点）
+          if (parentNode === null) {
+            // 如果节点是树的根
+            this.root = currentNode.right;
+          } else {
+            // 如果节点不是树的根
+            if (parentNode.left === currentNode) {
+              parentNode.left = currentNode.right;
+            } else {
+              parentNode.right = currentNode.right;
+            }
+          }
+          return true;
+        } else {
+          // 情况3：节点有两个子节点
+          // 找到要删除节点的中序后继
+          let successor = currentNode.right;
+          let successorParent = currentNode;
+          while (successor.left !== null) {
+            successorParent = successor;
+            successor = successor.left;
+          }
+
+          // 用中序后继替换要删除的节点
+          if (successorParent.left === successor) {
+            successorParent.left = successor.right;
+          } else {
+            successorParent.right = successor.right;
+          }
+
+          currentNode.data = successor.data;
+          return true;
+        }
+      } else if (value < currentNode.data) {
+        // 如果正在寻找的值小于当前节点的值，那么向左移动
+        parentNode = currentNode;
+        currentNode = currentNode.left;
+      } else {
+        // 如果正在寻找的值大于当前节点的值，那么向右移动
+        parentNode = currentNode;
+        currentNode = currentNode.right;
+      }
+    }
+    // 如果执行到这里，那么表明在树中没有找到该值
+    return false;
+  }
+}
+
+
+
+
+let myBST = new BinarySearchTree(); 
+
+myBST.insert(10);
+myBST.insert(5);
+myBST.insert(15);
+myBST.insert(3);
+myBST.insert(7);
+myBST.insert(13);
+myBST.insert(18);
+myBST.insert(20);
+myBST.insert(12);
+myBST.insert(14);
+myBST.insert(19);
+myBST.insert(30);
+
+  </script>
+  
+</body>
+</html>
