@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>演示哈希表</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示哈希表（Hashtable），JS用内置的Map来实现</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页，下载更多资源和试读</h1>
+
+
+
+    <script>
+        let characterInfo = new Map();
+
+        // 设置值
+        characterInfo.set("Link", "(555) 123-4567");
+        characterInfo.set("Zelda", "(555) 987-6543");
+        characterInfo.set("Mario", "(555) 555-1212");
+        characterInfo.set("Mega Man", "(555) 867-5309");
+        characterInfo.set("Ryu", "(555) 246-8135");
+        characterInfo.set("Corvo", "(555) 369-1472");
+
+        // 获取值
+        console.log(characterInfo.get("Ryu")); // (555) 246-8135
+        console.log(characterInfo.get("Batman")); // undefined
+
+        // 获取大小
+        console.log(characterInfo.size); // 6
+
+        // 删除项
+        console.log(characterInfo.delete("Corvo")); // true
+        console.log(characterInfo.size); // 5
+
+        // 删除所有项
+        characterInfo.clear();
+        console.log(characterInfo.size); // 0
+
+
+
+        function hash(key, arraySize) {
+            let hashValue = 0;
+
+            for (let i = 0; i < key.length; i++) {
+                // 累加键中每个字符的Unicode值
+                hashValue += key.charCodeAt(i);
+            }
+
+            // 执行取模运算，以确保哈希值适应数组大小
+            return hashValue % arraySize;
+        }
+
+        // 分配能容纳100个数据项的一个数组
+        let myArray = new Array(100);
+
+        // 两个输入返回了相同的哈希码，表明哈希函数的实现不算完美
+        let myHash = hash("Ryu", myArray.length);
+        console.log(myHash) // 20
+
+        let newHash = hash("Yur", myArray.length);
+        console.log(myHash) // 20
+
+    </script>
+
+</body>
+
+</html>
