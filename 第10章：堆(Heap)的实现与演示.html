@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>堆的实现和显示</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">堆（Heap）的实现与演示</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring">注意：这个堆是用数组来实现的</h1>
+
+
+    <script>
+
+        class Heap {
+            constructor() {
+                // 堆以数组的形式存储
+                this.heap = [];
+            }
+
+            // 向堆中添加新元素
+            insert(value) {
+                // 将新元素添加到数组末尾
+                this.heap.push(value);
+                // 通过新元素冒泡上浮来恢复堆属性
+                this.#bubbleUp(this.heap.length - 1);
+            }
+
+            // 从堆中移除最大元素
+            extractMax() {
+                // 如果堆为空，那么返回 null
+                if (this.heap.length === 0) {
+                    return null;
+                }
+                // 如果堆只有一个元素，那么移除并返回它
+                if (this.heap.length === 1) {
+                    return this.heap.pop();
+                }
+                // 否则，移除根元素（最大值）并用数组中的最后一个元素替换它
+                const max = this.heap[0];
+                const end = this.heap.pop();
+                this.heap[0] = end;
+                // 通过冒泡下沉新的根元素来恢复堆属性
+                this.#bubbleDown(0);
+                return max;
+            }
+
+            // 通过冒泡上浮元素来恢复堆属性
+            #bubbleUp(index) {
+                // 如果元素已经在根上，那么返回
+                if (index === 0) {
+                    return;
+                }
+                // 找到父元素的索引
+                const parentIndex = Math.floor((index - 1) / 2);
+                // 如果元素大于其父元素，那么交换它们
+                if (this.heap[index] > this.heap[parentIndex]) {
+                    [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+                    // 从新索引继续冒泡上浮元素
+                    this.#bubbleUp(parentIndex);
+                }
+            }
+
+            // 通过冒泡下沉元素来恢复堆属性
+            #bubbleDown(index) {
+                // 找到左右子元素的索引
+                const leftChildIndex = 2 * index + 1;
+                const rightChildIndex = 2 * index + 2;
+                // 初始化最大元素的索引为当前索引
+                let largestIndex = index;
+                // 如果左子元素大于当前元素，则更新最大索引
+                if (leftChildIndex < this.heap.length &&
+                    this.heap[leftChildIndex] > this.heap[largestIndex]) {
+                    largestIndex = leftChildIndex;
+                }
+                // 如果右子元素大于当前元素，那么更新最大索引
+                if (rightChildIndex < this.heap.length &&
+                    this.heap[rightChildIndex] > this.heap[largestIndex]) {
+                    largestIndex = rightChildIndex;
+                }
+                // 如果最大元素不是当前元素，那么交换它们，
+                //并继续从新索引下沉元素
+                if (largestIndex !== index) {
+                    [this.heap[index], this.heap[largestIndex]] =
+                        [this.heap[largestIndex], this.heap[index]];
+                    this.#bubbleDown(largestIndex);
+                }
+            }
+
+            // 返回堆中的最大元素但不移除它
+            getMax() {
+                return this.heap[0];
+            }
+
+            // 返回堆的大小
+            size() {
+                return this.heap.length;
+            }
+
+            // 检查堆是否为空
+            isEmpty() {
+                return this.heap.length === 0;
+            }
+        }
+
+
+        let myHeap = new Heap();
+        myHeap.insert(14);
+        myHeap.insert(18);
+        myHeap.insert(50);
+        myHeap.insert(1);
+        myHeap.insert(3);
+        myHeap.insert(15);
+        myHeap.insert(2);
+        myHeap.insert(2);
+        myHeap.insert(0);
+        myHeap.insert(13);
+
+        console.log("堆现在的大小是: " + myHeap.size()); // 10
+
+        console.log(myHeap.getMax()); // 50
+        console.log("堆现在的大小是: " + myHeap.size()); // 10
+
+        console.log(myHeap.extractMax()); // 50
+        console.log("堆现在的大小是: " + myHeap.size()); // 9
+
+        console.log(myHeap.extractMax()); // 18
+        console.log(myHeap.extractMax()); // 15
+        console.log(myHeap.extractMax()); // 14
+        console.log("堆现在的大小是: " + myHeap.size()); // 6
+
+    </script>
+
+</body>
+
+</html>
