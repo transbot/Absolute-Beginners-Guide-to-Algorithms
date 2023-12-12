@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>实现并演示图</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示图(Graph)，用JS的Map数据结构来实现,其中键是节点，值是一个Set，包含该节点的所有邻接节点</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页，下载更多资源和试读</h1>
+
+
+
+    <script>
+        class Graph {
+            constructor() {
+                // 用于存储节点及其相邻节点的一个Map
+                this.nodes = new Map();
+
+                // 指示图是有向还是无向的标志
+                this.isDirected = false;
+            }
+
+            // 向图中添加新节点
+            addNode(node) {
+                if (!this.nodes.has(node)) {
+                    this.nodes.set(node, new Set());
+                }
+            }
+
+            // 在两个节点之间添加边
+            addEdge(node1, node2) {
+                // 检查节点是否存在
+                if (!this.nodes.has(node1) || !this.nodes.has(node2)) {
+                    throw new Error('节点在图中不存在。');
+                }
+
+                // 在node1和node2之间添加边
+                this.nodes.get(node1).add(node2);
+
+                // 如果图是无向的，在相反方向上也添加边
+                if (!this.isDirected) {
+                    this.nodes.get(node2).add(node1);
+                }
+            }
+
+            // 从图中移除节点及其所有关联边
+            removeNode(node) {
+                if (this.nodes.has(node)) {
+                    // 从图中移除节点及其边
+                    this.nodes.delete(node);
+                    // 从其他节点中称除任何相关边
+                    for (const [otherNode, adjacentNodes] of this.nodes) {
+                        adjacentNodes.delete(node);
+                    }
+                }
+            }
+
+            // 移除两个节点之间的边
+            removeEdge(node1, node2) {
+                if (this.nodes.has(node1) && this.nodes.has(node2)) {
+                    // 移除node1和node2之间的边
+                    this.nodes.get(node1).delete(node2);
+
+                    // 如果图是无向的，也删除相反方向上的边
+                    if (!this.isDirected) {
+                        this.nodes.get(node2).delete(node1);
+                    }
+                }
+            }
+
+            // 检查两个节点之间是否存在边
+            hasEdge(node1, node2) {
+                if (this.nodes.has(node1) && this.nodes.has(node2)) {
+                    return this.nodes.get(node1).has(node2);
+                }
+                return false;
+            }
+
+            // 获取给定节点的邻接节点
+            getNeighbors(node) {
+                if (this.nodes.has(node)) {
+                    return Array.from(this.nodes.get(node));
+                }
+                return [];
+            }
+
+            // 获取图中所有节点
+            getAllNodes() {
+                return Array.from(this.nodes.keys());
+            }
+
+            // 将图设置为有向
+            setDirected() {
+                this.isDirected = true;
+            }
+
+            // 将图设置为无向
+            setUndirected() {
+                this.isDirected = false;
+            }
+
+            // 检查图是否有向
+            isGraphDirected() {
+                return this.isDirected;
+            }
+        }
+
+
+        // 以下代码演示了如何使用图的这个实现来执行常见的图操作。
+        
+        // 新建图的一个实例
+        const characters = new Graph();
+        characters.setDirected();
+
+        // 添加节点
+        characters.addNode('Jerry');
+        characters.addNode('Elaine');
+        characters.addNode('Kramer');
+        characters.addNode('George');
+        characters.addNode('Newman');
+
+        // 添加边
+        characters.addEdge('Jerry', 'Elaine');
+        characters.addEdge('Jerry', 'George');
+        characters.addEdge('Jerry', 'Kramer');
+        characters.addEdge('Elaine', 'Jerry');
+        characters.addEdge('Elaine', 'George');
+        characters.addEdge('Elaine', 'Kramer');
+        characters.addEdge('George', 'Elaine');
+        characters.addEdge('George', 'Jerry');
+        characters.addEdge('George', 'Kramer');
+        characters.addEdge('Kramer', 'Elaine');
+        characters.addEdge('Kramer', 'George');
+        characters.addEdge('Kramer', 'Jerry');
+        characters.addEdge('Kramer', 'Newman');
+        characters.addEdge('Newman', 'Kramer');
+        characters.addEdge('Newman', 'Jerry');
+
+        // 获取节点的邻接节点
+        console.log("Jerry的邻居: ");
+        console.log(characters.getNeighbors('Jerry'));
+        // ['Elaine', 'George', 'Kramer']
+
+        console.log("Newman的邻居: ");
+        console.log(characters.getNeighbors('Newman')); // ['Kramer', 'Jerry']
+
+        // 检查两个节点之间是否存在边
+        console.log("Jerry到Newman是否存在边? ");
+        console.log(characters.hasEdge('Jerry', 'Newman')); // false
+
+        console.log("Newman到Jerry是否存在边? ");
+        console.log(characters.hasEdge('Jerry', 'Newman')); // true
+
+        console.log("Elaine到George是否存在边? ");
+        console.log(characters.hasEdge('Elaine', 'George')); // true
+
+        // 获取图中的所有节点
+        console.log("所有节点: ");
+        console.log(characters.getAllNodes());
+        // ['Jerry', 'Elaine', 'Kramer', 'George', 'Newman']
+
+        // 移除一个节点
+        console.log("移除节点Newman: ")
+        characters.removeNode("Newman");
+        console.log(characters.getAllNodes());
+        // ['Jerry', 'Elaine', 'Kramer', 'George']
+
+        console.log("Kramer到Newman是否存在边: ");
+        console.log(characters.hasEdge('Kramer', 'Newman')); // false
+
+    </script>
+
+</body>
+
+</html>
