@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>实现并演示Trie</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示Trie，用JS的Map数据结构来实现每个节点</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页，下载更多资源和试读</h1>
+
+
+
+    <script>
+        class TrieNode {
+            constructor() {
+                // 每个TrieNode都有一个用Map（哈希表）
+                // 来实现的子节点。其中键是字符，
+                // 值是子TrieNode
+                this.children = new Map();
+
+                // 标志，指示当前TrieNode是否表示单词的结尾
+                this.isEndOfWord = false;
+            }
+        }
+
+        class Trie {
+            constructor() {
+                // Trie的根是一个空的TrieNode
+                this.root = new TrieNode();
+            }
+
+            // 向Trie中添加单词
+            insert(word) {
+                let current = this.root;
+
+                for (let i = 0; i < word.length; i++) {
+                    const char = word[i];
+
+                    // 如果字符不作为子节点存在，就为其创建一个新的TrieNode
+                    if (!current.children.get(char)) {
+                        current.children.set(char, new TrieNode());
+                    }
+
+                    // 移动到下一个TrieNode
+                    current = current.children.get(char);
+                }
+
+                // 通过将isEndOfWord设置为true来标记单词的结尾
+                current.isEndOfWord = true;
+            }
+
+            // 如果单词存在于Trie中，那么返回true
+            search(word) {
+                let current = this.root;
+
+                for (let i = 0; i < word.length; i++) {
+                    const char = word[i];
+                    // 如果字符不作为子节点存在，那么表明单词在Trie中不存在
+                    if (!current.children.get(char)) {
+                        return false;
+                    }
+
+                    // 移动到下一个TrieNode。
+                    current = current.children.get(char);
+                }
+                // 如果最后一个TrieNode表示单词的结尾，那么返回true
+                return current.isEndOfWord;
+            }
+
+            // 如果前缀存在于Trie中，那么返回true
+            startsWith(prefix) {
+                let current = this.root;
+
+                for (let i = 0; i < prefix.length; i++) {
+                    const char = prefix[i];
+
+                    // 如果字符不作为子节点存在，那么表明前缀不存在于Trie中
+                    if (!current.children.get(char)) {
+                        return false;
+                    }
+
+                    // 移动到下一个TrieNode
+                    current = current.children.get(char);
+                }
+
+                // 前缀存在于Trie中。
+                return true;
+            }
+
+            // 返回与前缀匹配的Trie中的所有单词
+            getAllWords(prefix = '') {
+                const words = [];
+                // 找到与给定前缀对应的节点
+                const current = this.#findNode(prefix);
+
+                if (current) {
+                    // 如果节点存在，那么从该节点开始遍历Trie，
+                    // 找到所有单词，并将它们添加到words数组中
+                    this.#traverse(current, prefix, words);
+                }
+
+                return words;
+            }
+
+            delete(word) {
+                let current = this.root;
+
+                const stack = [];
+
+                let index = 0;
+
+                // 在Trie中找到单词的最后一个节点
+                while (index < word.length) {
+                    const char = word[index];
+
+                    if (!current.children.get(char)) {
+                        // 单词不存在于Trie中，无需删除
+                        return;
+                    }
+
+                    stack.push({ node: current, char });
+
+                    current = current.children.get(char);
+                    index++;
+                }
+
+                if (!current.isEndOfWord) {
+                    // 单词不存在于Trie中，无需删除
+                    return;
+                }
+
+                // 将最后一个节点标记为不表示单词的结尾
+                current.isEndOfWord = false;
+
+                // 以相反的顺序删除节点，直到遇到
+                // 具有其他子节点或表示另一个单词
+                //  结尾的节点为止
+                while (stack.length > 0) {
+                    const { node, char } = stack.pop();
+
+                    if (current.children.size === 0 && !current.isEndOfWord) {
+                        node.children.delete(char);
+                        current = node;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            #findNode(prefix) {
+                let current = this.root;
+                for (let i = 0; i < prefix.length; i++) {
+                    const char = prefix[i];
+
+                    // 如果字符不作为子节点存在，那么表明前缀不存在于Trie中
+                    if (!current.children.get(char)) {
+                        return null;
+                    }
+
+                    // 移动到下一个TrieNode
+                    current = current.children.get(char);
+                }
+                // 返回与给定前缀对应的节点
+                return current;
+            }
+
+            #traverse(node, prefix, words) {
+                const stack = [];
+
+                stack.push({ node, prefix });
+
+                while (stack.length > 0) {
+                    const { node, prefix } = stack.pop();
+
+                    // 如果当前节点表示单词的结尾，
+                    // 那么将单词添加到words数组中
+                    if (node.isEndOfWord) {
+                        words.push(prefix);
+                    }
+
+                    // 所有子节点入栈以继续遍历
+                    for (const char of node.children.keys()) {
+                        const childNode = node.children.get(char);
+                        stack.push({ node: childNode, prefix: prefix + char });
+                    }
+                }
+            }
+        }
+
+
+        // 新建一个Trie
+        const trie = new Trie();
+
+        // 向Trie中插入一些单词
+        trie.insert("apple");
+        trie.insert("app");
+        trie.insert("monkey");
+        trie.insert("monk");
+        trie.insert("cat");
+        trie.insert("dog");
+        trie.insert("duck");
+        trie.insert("dune");
+        trie.insert("我们都是中国人");
+        trie.insert("我今天去了故宫");
+
+        // 在Trie中查找单词
+        console.log(trie.search("apple")); // true
+        console.log(trie.search("app")); // true
+        console.log(trie.search("monk")); // true
+        console.log(trie.search("elephant")); // false
+
+        // 获取以给定前缀开头的Trie中的所有单词
+        console.log(trie.getAllWords("ap")); // ['apple', 'app']
+        console.log(trie.getAllWords("b")); // []
+        console.log(trie.getAllWords("c")); // ['cat']
+        console.log(trie.getAllWords("m")); // ['monk', 'monkey']
+                
+
+        // 从Trie中删除一个单词
+        trie.delete("monkey");
+
+        //获取以给定前缀开头的Trie中的所有单词
+        console.log(trie.getAllWords("m")); // ['monk']
+        console.log(trie.getAllWords("我")); //
+
+
+    </script>
+
+</body>
+
+</html>
