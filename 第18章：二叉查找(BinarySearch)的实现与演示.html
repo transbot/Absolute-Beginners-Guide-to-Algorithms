@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>实现并演示二叉查找（迭代和递归版本）</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+
+        .winter {
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示如何实现二叉查找（迭代和递归版本）</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">二叉查找用两种方式实现：</br>
+        1. 迭代：<span class="winter">binarySearch_iteration(arr, val)</span>
+        </br>
+        2. 递归：<span class="winter">binarySearch_recursive(arr, val, start = 0, end = arr.length - 1)</span>
+        </br>前者效率高，后者效率……嗯，一般
+    </h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页(https://bookzhou.com)，下载更多资源和试读
+    </h1>
+
+    <script>
+
+        // 用迭代方法实现二叉查找
+        function binarySearch_iteration(arr, val) {
+            let start = 0;
+            let end = arr.length - 1;
+
+            while (start <= end) {
+                let middleIndex = Math.floor((start + end) / 2);
+
+                if (arr[middleIndex] === val) {
+                    return middleIndex;
+                } else if (arr[middleIndex] < val) {
+                    start = middleIndex + 1;
+                } else {
+                    end = middleIndex - 1;
+                }
+            }
+
+            return -1;
+        }
+
+
+        // 用递归方法实现二叉查找
+        function binarySearch_recursive(arr, val, start = 0, end = arr.length - 1) {
+            const middleIndex = Math.floor((start + end) / 2);
+
+            if (val === arr[middleIndex]) {                
+                return middleIndex;
+            }
+
+            if (start >= end) {
+                return -1;
+            }
+
+            if (val < arr[middleIndex]) {
+                return binarySearch_recursive(arr, val, start, middleIndex - 1);
+            } else {
+                return binarySearch_recursive(arr, val, middleIndex + 1, end);
+            }
+        }
+
+
+        let numbers = [1, 3, 5, 10, 32, 40, 60, 71, 80, 99];
+
+        let foundIndex = binarySearch_iteration(numbers, 60);
+        console.log(foundIndex) // 6
+
+        let foundIndex2 = binarySearch_recursive(numbers, 60);
+        console.log(foundIndex2) // 6
+
+    </script>
+
+</body>
+
+</html>
