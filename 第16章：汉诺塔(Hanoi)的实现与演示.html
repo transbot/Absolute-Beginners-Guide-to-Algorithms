@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>实现并演示汉诺塔问题</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示如何用递归解决汉诺塔(Towers of Hanoi)问题</h1>
+    <h1 id="smallMessage" class="highlight spring">本例初始圆盘数为3，要查看更多圆盘的结果，请自行修改numberOfDisks变量的值</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页，下载更多资源和试读</h1>
+
+
+
+    <script>
+        var numberOfDisks = 3; // 指定初始圆盘数
+
+        var hanoi = function (n, a, b, c) {
+            if (n > 0) {
+                hanoi(n - 1, a, c, b);
+                console.log("将圆盘" + n + "从" + a + "移动到" + c + "!");
+                hanoi(n - 1, b, a, c);
+            }
+        }
+        hanoi(numberOfDisks, "起始柱", "临时柱", "目标柱");
+
+    </script>
+
+</body>
+
+</html>
