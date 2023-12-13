@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>实现并演示线性查找（普通和全局版本）</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+        .winter {
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #1969c5a0;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示如何执行最简单的线性查找（普通和全局版本）</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">有两种线性查找：1. 普通版本（<span class="winter">linear_search</span>）2. 全局版本（<span class="winter">global_linear_search</span>）</br>前者找到一个项即停止，后者找出所有项</h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页(https://bookzhou.com)，下载更多资源和试读</h1>
+
+    <script>
+        function linear_search(collection, item) {
+            for (let i = 0; i < collection.length; i++) {
+                if (collection[i] === item) {
+                    // 返回目标项所在的索引位置
+                    return i;
+                }
+            }
+            // 未找到目标项
+            return -1;
+        }
+
+        function global_linear_search(collection, item) {
+            let foundPositions = [];
+
+            for (let i = 0; i < collection.length; i++) {
+                if (collection[i] === item) {
+                    // 存储找到的项目的位置
+                    foundPositions.push(i);
+                }
+            }
+
+            if (foundPositions.length > 0) {
+                return foundPositions;
+            } else {
+                // 未找到项目
+                return -1;
+            }
+        }
+
+
+        // 在以下数组中查找值3的索引位置
+        let data = [5, 8, 0, 9, 1, 7, 3, 2, 4, 3, 6];
+
+        // 普通线性查找，找到第一项就算完事儿
+        let result = linear_search(data, 3);
+        console.log(result) // 6
+
+        // 全局线性查找，找出所有项才算完事儿 
+        let result_goabal = global_linear_search(data, 3);
+        console.log(result_goabal) // [6, 9]
+    </script>
+
+</body>
+
+</html>
