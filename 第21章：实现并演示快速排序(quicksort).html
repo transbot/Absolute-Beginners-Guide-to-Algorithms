@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>实现并演示快速排序(quicksort)</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+
+        .winter {
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示如何实现快速排序(quicksort)</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>    
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页(https://bookzhou.com)，下载更多资源和试读
+    </h1>
+    <script>
+        // 实现quicksort算法
+
+        // 辅助函数
+        function quickSortHelper(arrayInput, left, right) {
+            let i = left;
+            let j = right;
+            let pivotPoint = arrayInput[Math.round((left + right) * 0.5)];
+
+            // 循环
+            while (i <= j) {
+
+                while (arrayInput[i] < pivotPoint) {
+                    i++;
+                }
+
+                while (arrayInput[j] > pivotPoint) {
+                    j--;
+                }
+
+                if (i <= j) {
+                    let tempStore = arrayInput[i];
+
+                    arrayInput[i] = arrayInput[j];
+                    i++;
+
+                    arrayInput[j] = tempStore;
+                    j--;
+                }
+            }
+
+            // 交换
+            if (left < j) {
+                quickSortHelper(arrayInput, left, j);
+            }
+
+            if (i < right) {
+                quickSortHelper(arrayInput, i, right);
+            }
+
+            return arrayInput;
+        }
+
+        // quickSort函数
+        function quickSort(input) {
+            return quickSortHelper(input, 0, input.length - 1);
+        }
+
+        // 下例演示了如何使用这个实现。
+        let myData = [24, 10, 17, 9, 5, 9, 1, 23, 300];
+        quickSort(myData);
+
+        console.log(myData);
+
+    </script>
+
+</body>
+
+</html>
