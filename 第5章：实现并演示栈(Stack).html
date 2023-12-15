@@ -55,6 +55,9 @@ class Stack {
       this.items.push(item);
       return item;
     }
+    get length() {
+      return this.items.length;
+    }  
   }
 
   let myStack = new Stack();
