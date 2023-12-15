@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>为图增加BFS和DFS功能</title>
+
+    <style>
+        .highlight {
+            font-family: "Arial";
+            padding: 30px;
+        }
+
+        .summer {
+            font-size: 64px;
+            color: #0099FF;
+        }
+
+        .spring {
+            font-size: 24px;
+            color: #1969c5a0;
+        }
+
+        .winter {
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #1969c5a0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="bigMessage" class="highlight summer">演示如何为图增加BFS和DFS功能</h1>
+    <h1 id="smallMessage" class="highlight spring">打开浏览器的“开发者工具”，进入“控制台”使用</h1>
+    <h1 id="smallMessage" class="highlight spring">图的BFS和DFS：</br>
+        1. 广度优先查找（BFS）：<span class="winter">bfs(<i>startingNode</i>)</span>
+        </br>
+        2. 深度优先查找（DFS）：<span class="winter">dfs(<i>startingNode</i>)</span>
+    </h1>
+    <h1 id="smallMessage" class="highlight spring">例：在Chrome上按Ctrl+Shift+I</h1>
+    <h1 id="smallMessage" class="highlight spring"><a href="https://bookzhou.com">访问译者主页(https://bookzhou.com)，下载更多资源和试读
+    </h1>
+
+    <script src="https://www.kirupa.com/js/queue_v1.js">
+        // 引用现有的队列实现（第6章）    
+    </script>
+
+    <script>
+        class Graph {
+            constructor() {
+                // 用于存储节点及其相邻节点的一个Map
+                this.nodes = new Map();
+
+                // 指示图是有向还是无向的标志
+                this.isDirected = false;
+            }
+
+            // 向图中添加新节点
+            addNode(node) {
+                if (!this.nodes.has(node)) {
+                    this.nodes.set(node, new Set());
+                }
+            }
+
+            // 在两个节点之间添加边
+            addEdge(node1, node2) {
+                // 检查节点是否存在
+                if (!this.nodes.has(node1) || !this.nodes.has(node2)) {
+                    throw new Error('节点在图中不存在。');
+                }
+
+                // 在node1和node2之间添加边
+                this.nodes.get(node1).add(node2);
+
+                // 如果图是无向的，在相反方向上也添加边
+                if (!this.isDirected) {
+                    this.nodes.get(node2).add(node1);
+                }
+            }
+
+            // 从图中移除节点及其所有关联边
+            removeNode(node) {
+                if (this.nodes.has(node)) {
+                    // 从图中移除节点及其边
+                    this.nodes.delete(node);
+                    // 从其他节点中称除任何相关边
+                    for (const [otherNode, adjacentNodes] of this.nodes) {
+                        adjacentNodes.delete(node);
+                    }
+                }
+            }
+
+            // 移除两个节点之间的边
+            removeEdge(node1, node2) {
+                if (this.nodes.has(node1) && this.nodes.has(node2)) {
+                    // 移除node1和node2之间的边
+                    this.nodes.get(node1).delete(node2);
+
+                    // 如果图是无向的，也删除相反方向上的边
+                    if (!this.isDirected) {
+                        this.nodes.get(node2).delete(node1);
+                    }
+                }
+            }
+
+            // 检查两个节点之间是否存在边
+            hasEdge(node1, node2) {
+                if (this.nodes.has(node1) && this.nodes.has(node2)) {
+                    return this.nodes.get(node1).has(node2);
+                }
+                return false;
+            }
+
+            // 获取给定节点的邻接节点
+            getNeighbors(node) {
+                if (this.nodes.has(node)) {
+                    return Array.from(this.nodes.get(node));
+                }
+                return [];
+            }
+
+            // 获取图中所有节点
+            getAllNodes() {
+                return Array.from(this.nodes.keys());
+            }
+
+            // 将图设置为有向
+            setDirected() {
+                this.isDirected = true;
+            }
+
+            // 将图设置为无向
+            setUndirected() {
+                this.isDirected = false;
+            }
+
+            // 检查图是否有向
+            isGraphDirected() {
+                return this.isDirected;
+            }
+
+
+            // 检查图是否有向
+            isGraphDirected() {
+                return this.isDirected;
+            }
+
+
+            // 用于存储已探索节点的类变量
+            #explored = new Set();
+
+            getExploredNodes() {
+                return this.#explored;
+            }
+
+            // 深度优先查找（DFS）
+            dfs(startingNode) {
+                // 重置以跟踪已探索节点
+                this.#explored = new Set();
+
+                // 调用递归辅助函数开始DFS
+                this.#dfsHelper(startingNode);
+            }
+
+            #dfsHelper(node) {
+                // 将当前节点标记为已探索
+                this.#explored.add(node);
+
+                // 获取未来要探索的邻居
+                const neighbors = this.getNeighbors(node);
+
+                for (const neighbor of neighbors) {
+                    if (!this.#explored.has(neighbor)) {
+                        // 递归调用未探索邻居的辅助函数
+                        this.#dfsHelper(neighbor);
+                    }
+                }
+            }
+
+            // 广度优先查找（BFS）
+            bfs(startingNode) {
+                // 重置以跟踪已探索节点
+                this.#explored = new Set();
+
+                // 用于存储将要探索的节点的队列
+                const queue = new Queue();
+
+                // 将起始节点标记为已探索
+                this.#explored.add(startingNode);
+
+                // 将起始节点入队
+                queue.enqueue(startingNode);
+
+                while (queue.length > 0) {
+                    // 从队列中出队一个节点
+                    const node = queue.dequeue();
+
+                    const neighbors = this.getNeighbors(node);
+
+                    for (const neighbor of neighbors) {
+                        if (!this.#explored.has(neighbor)) {
+                            // 将邻居标记为已探索
+                            this.#explored.add(neighbor);
+
+                            // 将邻居入队以进行探索
+                            queue.enqueue(neighbor);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // 重建本章的示例图
+        const graph = new Graph();
+
+        graph.addNode("A");
+        graph.addNode("B");
+        graph.addNode("C");
+        graph.addNode("D");
+        graph.addNode("E");
+        graph.addNode("F");
+        graph.addNode("G");
+        graph.addNode("H");
+
+        graph.addEdge("A", "B");
+        graph.addEdge("A", "C");
+        graph.addEdge("A", "D");
+        graph.addEdge("C", "E");
+        graph.addEdge("D", "E");
+        graph.addEdge("D", "F");
+        graph.addEdge("D", "G");
+        graph.addEdge("F", "H");
+
+        console.log("DFS:");
+        graph.dfs("A"); // 从节点"A"开始执行DFS
+        console.log(graph.getExploredNodes());
+
+        console.log("BFS:");
+        graph.bfs("A"); // 从节点"A"开始执行BFS
+        console.log(graph.getExploredNodes());
+
+    </script>
+
+</body>
+
+</html>
